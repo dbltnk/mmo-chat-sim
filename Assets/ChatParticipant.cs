@@ -4,12 +4,10 @@ using System.Collections;
 public class ChatParticipant : MonoBehaviour {
 
 	string participantName;
-	bool willSpeakSoon = false;
-	ChatHandler ChatHandler;
-	ParticipantHandler ParticipantHandler;
-
-	float minTimeOutInSeconds;
-	float maxTimeOutInSeconds;
+	ChatService ChatHandler;
+	
+	public float MinTimeOutInSeconds;
+	public float MaxTimeOutInSeconds;
 	
 	string[] names = 
 	{
@@ -57,41 +55,31 @@ public class ChatParticipant : MonoBehaviour {
 
 	void Awake ()
 	{
-		ChatHandler = GameObject.Find("ChatHandler").gameObject.GetComponent<ChatHandler>();
-		ParticipantHandler = GameObject.Find("ParticipantHandler").gameObject.GetComponent<ParticipantHandler>();
-		minTimeOutInSeconds = ParticipantHandler.minTimeOutInSeconds;
-		maxTimeOutInSeconds = ParticipantHandler.maxTimeOutInSeconds;
+        Debug.Log("AWAKE");
 
+        // TODO only works if there is one chat service
+        ChatHandler = GameObject.FindObjectOfType<ChatService>();
+		
 		participantName = selectRandomName();
 		name = participantName; // This is just for visual debugging, not used anywhere else.
 	}
 
 	// Use this for initialization
-	void Start () 
+    IEnumerator Start() 
 	{
-		startSpeaking();
-	}
-	
-	// Update is called once per frame
-	void Update () 
-	{
-		if(willSpeakSoon == false)
-		{
-			willSpeakSoon = true;
-			StartCoroutine(startSpeaking());
-		}
+        Debug.Log("START");
+
+		while(true)
+        {
+            // speak
+            float randomTimeInSeconds = Random.Range(MinTimeOutInSeconds, MaxTimeOutInSeconds);
+            yield return new WaitForSeconds(randomTimeInSeconds);
+
+            string messageToSend = generateChatLine();
+            SendChatMessage(messageToSend);
+        }
 	}
 
-	IEnumerator startSpeaking ()
-	{
-		float randomTimeInSeconds = Random.Range(minTimeOutInSeconds, maxTimeOutInSeconds);
-		yield return new WaitForSeconds(randomTimeInSeconds);
-
-		string messageToSend = generateChatLine();
-		SendChatMessage(messageToSend);
-
-		willSpeakSoon = false;
-	}
 
 	string generateChatLine () 
 	{
@@ -125,4 +113,12 @@ public class ChatParticipant : MonoBehaviour {
 	{
 		ChatHandler.ReceiveChatMessage(message);
 	}
+
+    // TODO inject name
+    public void Init(float minTimeOutInSeconds, float maxTimeOutInSeconds)
+    {
+        Debug.Log("INIT");
+        MinTimeOutInSeconds = minTimeOutInSeconds;
+        MaxTimeOutInSeconds = maxTimeOutInSeconds;
+    }
 }

@@ -2,7 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 
-public class ParticipantHandler : MonoBehaviour {
+public class ParticipantSpawner : MonoBehaviour {
 
 	public int ChatParticipantsToCreate;
 	public GameObject ParticipantBlueprint;
@@ -17,19 +17,14 @@ public class ParticipantHandler : MonoBehaviour {
 		createParticipants(ChatParticipantsToCreate);
 	}
 	
-	// Update is called once per frame
-	void Update () 
-	{
-	
-	}
-
-
 	void createParticipants (int amount)
 	{
 		for (int i = 0; i < amount; i++) 
 		{
-			GameObject participantObject = (GameObject)Instantiate(ParticipantBlueprint);
+            GameObject participantObject = Instantiate(ParticipantBlueprint) as GameObject;
 			participantObject.transform.SetParent(PlayerRoot.transform);
+            ChatParticipant chatParticipant = participantObject.GetComponent<ChatParticipant>();
+            chatParticipant.Init(minTimeOutInSeconds, maxTimeOutInSeconds);
 		}
 	}
 }

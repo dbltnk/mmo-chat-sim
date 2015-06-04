@@ -3,7 +3,7 @@ using System.Collections;
 using UnityEngine.UI;
 using System.Collections.Generic;
 
-public class ChatHandler : MonoBehaviour {
+public class ChatService : MonoBehaviour {
 
 	public GameObject TextObject;
 	Text TextBox;
