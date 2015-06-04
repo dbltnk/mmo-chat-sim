@@ -50,7 +50,15 @@ public class ParticipantSpawner : MonoBehaviour {
             ChatParticipant chatParticipant = participantObject.GetComponent<ChatParticipant>();
 
 			string participantName = selectRandomName();
-			chatParticipant.Init(participantName, minTimeOutInSeconds, maxTimeOutInSeconds);
+
+			int essencesOwned = Random.Range(10, 50);
+			int woodOwned = Random.Range(0, 9);
+			int clayOwned = Random.Range(3, 9);
+			int woodNeeded = Random.Range(3, 9);
+			int clayNeeded = Random.Range(0, 9);
+
+			chatParticipant.Init(participantName, minTimeOutInSeconds, maxTimeOutInSeconds,
+			                     essencesOwned, woodOwned, clayOwned, woodNeeded, clayNeeded);
 		}
 	}
 
