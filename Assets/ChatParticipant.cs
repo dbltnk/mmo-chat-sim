@@ -2,36 +2,12 @@
 using System.Collections;
 
 public class ChatParticipant : MonoBehaviour {
-
-	string participantName;
+	
 	ChatService ChatHandler;
 	
 	public float MinTimeOutInSeconds;
 	public float MaxTimeOutInSeconds;
-	
-	string[] names = 
-	{
-		"Shu Wa-Shi", 
-		"Chui To-Ki", 
-		"Chua Fu-Biao", 
-		"Su Chou-Tu", 
-		"Chu Jiu-Hao", 
-		"Da Yong-Gui", 
-		"Chieu Shi-Hu", 
-		"Chao Zhi-Xie", 
-		"Saio Chee-Di", 
-		"Chuie Pi-Su", 
-		"Hu Chu-Fei", 
-		"Li Niu-Szi", 
-		"Zhai Do-Wai", 
-		"Fu Te-Rou", 
-		"Zhuo An-Xiao", 
-		"Ying Li-Li", 
-		"Yan Tai-Na", 
-		"Li Chwa-Ku", 
-		"Lo Da-Shu", 
-		"Sui Chio-Tsao"
-	};
+	public string ParticipantName;
 
 	string[] sentences = 
 	{
@@ -55,20 +31,13 @@ public class ChatParticipant : MonoBehaviour {
 
 	void Awake ()
 	{
-        Debug.Log("AWAKE");
-
         // TODO only works if there is one chat service
         ChatHandler = GameObject.FindObjectOfType<ChatService>();
-		
-		participantName = selectRandomName();
-		name = participantName; // This is just for visual debugging, not used anywhere else.
 	}
 
 	// Use this for initialization
     IEnumerator Start() 
 	{
-        Debug.Log("START");
-
 		while(true)
         {
             // speak
@@ -85,9 +54,9 @@ public class ChatParticipant : MonoBehaviour {
 	{
 		string sentence = selectRandomSentence();
 
-		if (participantName != "") 
+		if (ParticipantName != "") 
 		{
-			return string.Concat(participantName, ": ", sentence);
+			return string.Concat(ParticipantName, ": ", sentence);
 		}
 			else 
 		{
@@ -102,22 +71,15 @@ public class ChatParticipant : MonoBehaviour {
 		return sentences[randomNumber];
 	}
 
-	string selectRandomName()
-	{
-		int maxNumber = names.GetLength(0);
-		int randomNumber = Random.Range(1, maxNumber);
-		return names[randomNumber];
-	}
-
 	void SendChatMessage (string message)
 	{
 		ChatHandler.ReceiveChatMessage(message);
 	}
 
-    // TODO inject name
-    public void Init(float minTimeOutInSeconds, float maxTimeOutInSeconds)
+	public void Init(string participantName, float minTimeOutInSeconds, float maxTimeOutInSeconds)
     {
-        Debug.Log("INIT");
+		ParticipantName = participantName;
+		name = participantName; // This is just for visual debugging, not used anywhere else.
         MinTimeOutInSeconds = minTimeOutInSeconds;
         MaxTimeOutInSeconds = maxTimeOutInSeconds;
     }
