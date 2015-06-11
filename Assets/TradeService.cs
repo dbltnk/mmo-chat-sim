@@ -11,47 +11,46 @@ public class TradeService : MonoBehaviour {
 	Dictionary<string, int> ClayBuyOrders = new Dictionary<string, int>();
 	Dictionary<string, int> ClaySellOrders = new Dictionary<string, int>();
 
-	public GameObject WoodBuyOrdersObject;
-	public GameObject WoodSellOrdersObject;
-	public GameObject ClayBuyOrdersObject;
-	public GameObject ClaySellOrdersObject;
-
-	Text WoodBuyOrdersObjectText;
-	Text WoodSellOrdersObjectText;
-	Text ClayBuyOrdersObjectText;
-	Text ClaySellOrdersObjectText;
-	
-	// Use this for initialization
-	void Start () 
+	public void RegisterOrder (string traderName, string resource, int amount)
 	{
-		WoodBuyOrdersObjectText = WoodBuyOrdersObject.GetComponent<Text>();
-		WoodSellOrdersObjectText = WoodSellOrdersObject.GetComponent<Text>();
-		ClayBuyOrdersObjectText = ClayBuyOrdersObject.GetComponent<Text>();
-		ClaySellOrdersObjectText = ClaySellOrdersObject.GetComponent<Text>();
+		bool orderExistsAlready = false;
+		string transactionType = (amount > 0) ? "buy" : "sell";
+		Dictionary<string, int> dict = GetOrderDictionary (resource, transactionType);
+		
+		foreach(KeyValuePair<string, int> order in dict)
+		{
+			if (order.Key == traderName && order.Value == amount) orderExistsAlready = true;
+		}
+		
+		if (orderExistsAlready == false) dict.Add(traderName, amount);
 	}
-	
-	// Update is called once per frame
+
 	void Update () 
 	{
-		CreateOrderText("wood", "buy");
-		CreateOrderText("wood", "sell");
-		CreateOrderText("clay", "buy");
-		CreateOrderText("clay", "sell");
+		SetOrderText("wood", "buy");
+		SetOrderText("wood", "sell");
+		SetOrderText("clay", "buy");
+		SetOrderText("clay", "sell");
 	}
-
-	void CreateOrderText (string resource, string transactionType)
+	
+	void SetOrderText (string resource, string transactionType)
 	{
 		string gameObjectName = string.Concat(Capitalize(resource), Capitalize(transactionType), "Orders");
 		Text text = GameObject.Find(gameObjectName).GetComponent<Text>();
 		text.text = string.Concat (Capitalize(resource)," Buy Orders: \n");
 
-		string dictionaryName = string.Concat(Capitalize(resource), Capitalize(transactionType), "Orders");
-		Dictionary<string, int> dict = this.GetType().GetField(dictionaryName, BindingFlags.Instance|BindingFlags.NonPublic).GetValue(this) as Dictionary<string, int>;
-
+		Dictionary<string, int> dict = GetOrderDictionary (resource, transactionType);
 		foreach (KeyValuePair<string, int> order in dict)
 		{
 			text.text = string.Concat(text.text, order.Key, ": ", order.Value, "\n"); 
 		}
+	}
+
+	Dictionary<string, int> GetOrderDictionary (string resource, string transactionType) 
+	{
+		string dictionaryName = string.Concat(Capitalize(resource), Capitalize(transactionType), "Orders");
+		Dictionary<string, int> dict = this.GetType().GetField(dictionaryName, BindingFlags.Instance|BindingFlags.NonPublic).GetValue(this) as Dictionary<string, int>;
+		return dict;
 	}
 
 	string Capitalize(string sourceStr)
@@ -75,56 +74,5 @@ public class TradeService : MonoBehaviour {
 			return new string(allCharacters);
 		}
 		return sourceStr;
-	}
-
-	public void RegisterOrder (string traderName, string resource, int amount)
-	{
-
-//		Debug.Log(traderName);
-//		Debug.Log(resource);
-//		Debug.Log(amount);
-//		Debug.Log("-----------");
-
-
-		if (resource == "wood" && amount > 0)
-		{
-			bool orderExistsAlready = false;
-			foreach(KeyValuePair<string, int> order in WoodBuyOrders)
-			{
-				if (order.Key == traderName && order.Value == amount) orderExistsAlready = true;
-			}
-			if (orderExistsAlready == false) WoodBuyOrders.Add(traderName, amount);
-		}
-		else if (resource == "wood" && amount < 0)
-		{
-			bool orderExistsAlready = false;
-			foreach(KeyValuePair<string, int> order in WoodSellOrders)
-			{
-				if (order.Key == traderName && order.Value == amount) orderExistsAlready = true;
-			}
-			if (orderExistsAlready == false) WoodSellOrders.Add(traderName, amount);
-		}
-		else if (resource == "clay" && amount > 0)
-		{
-			bool orderExistsAlready = false;
-			foreach(KeyValuePair<string, int> order in ClayBuyOrders)
-			{
-				if (order.Key == traderName && order.Value == amount) orderExistsAlready = true;
-			}
-			if (orderExistsAlready == false) ClayBuyOrders.Add(traderName, amount);
-		}
-		else if (resource == "clay" && amount < 0)
-		{
-			bool orderExistsAlready = false;
-			foreach(KeyValuePair<string, int> order in ClaySellOrders)
-			{
-				if (order.Key == traderName && order.Value == amount) orderExistsAlready = true;
-			}
-			if (orderExistsAlready == false) ClaySellOrders.Add(traderName, amount);
-		}
-		else
-		{
-			Debug.LogError("incorrect transaction");
-		}
 	}
 }
