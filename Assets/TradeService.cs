@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine.UI;
+using System.Reflection;
 
 public class TradeService : MonoBehaviour {
 
@@ -32,29 +33,48 @@ public class TradeService : MonoBehaviour {
 	// Update is called once per frame
 	void Update () 
 	{
-		WoodBuyOrdersObjectText.text = "Wood Buy Orders: \n";
-		foreach (KeyValuePair<string, int> order in WoodBuyOrders)
-		{
-			WoodBuyOrdersObjectText.text = string.Concat(WoodBuyOrdersObjectText.text, order.Key, ": ", order.Value, "\n"); 
-		}
+		CreateOrderText("wood", "buy");
+		CreateOrderText("wood", "sell");
+		CreateOrderText("clay", "buy");
+		CreateOrderText("clay", "sell");
+	}
 
-		WoodSellOrdersObjectText.text = "Wood Sell Orders: \n";
-		foreach (KeyValuePair<string, int> order in WoodSellOrders)
-		{
-			WoodSellOrdersObjectText.text = string.Concat(WoodSellOrdersObjectText.text, order.Key, ": ", order.Value, "\n"); 
-		}
+	void CreateOrderText (string resource, string transactionType)
+	{
+		string gameObjectName = string.Concat(Capitalize(resource), Capitalize(transactionType), "Orders");
+		Text text = GameObject.Find(gameObjectName).GetComponent<Text>();
+		text.text = string.Concat (Capitalize(resource)," Buy Orders: \n");
 
-		ClayBuyOrdersObjectText.text = "Clay Buy Orders: \n";
-		foreach (KeyValuePair<string, int> order in ClayBuyOrders)
-		{
-			ClayBuyOrdersObjectText.text = string.Concat(ClayBuyOrdersObjectText.text, order.Key, ": ", order.Value, "\n"); 
-		}
+		string dictionaryName = string.Concat(Capitalize(resource), Capitalize(transactionType), "Orders");
+		Dictionary<string, int> dict = this.GetType().GetField(dictionaryName, BindingFlags.Instance|BindingFlags.NonPublic).GetValue(this) as Dictionary<string, int>;
 
-		ClaySellOrdersObjectText.text = "Clay Sell Orders: \n";
-		foreach (KeyValuePair<string, int> order in ClaySellOrders)
+		foreach (KeyValuePair<string, int> order in dict)
 		{
-			ClaySellOrdersObjectText.text = string.Concat(ClaySellOrdersObjectText.text, order.Key, ": ", order.Value, "\n"); 
+			text.text = string.Concat(text.text, order.Key, ": ", order.Value, "\n"); 
 		}
+	}
+
+	string Capitalize(string sourceStr)
+	{
+		sourceStr.Trim();
+		if (!string.IsNullOrEmpty(sourceStr))
+		{
+			char[] allCharacters = sourceStr.ToCharArray();
+			
+			for (int i = 0; i < allCharacters.Length; i++)
+			{
+				char character = allCharacters[i];
+				if (i == 0)
+				{
+					if (char.IsLower(character))
+					{
+						allCharacters[i] = char.ToUpper(character);
+					}
+				}
+			}
+			return new string(allCharacters);
+		}
+		return sourceStr;
 	}
 
 	public void RegisterOrder (string traderName, string resource, int amount)
