@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine.UI;
 using System.Reflection;
+using AUtils;
 
 public class TradeService : MonoBehaviour {
 
@@ -11,6 +12,7 @@ public class TradeService : MonoBehaviour {
 	Dictionary<string, int> ClayBuyOrders = new Dictionary<string, int>();
 	Dictionary<string, int> ClaySellOrders = new Dictionary<string, int>();
 
+	//TODO: this sometimes throws duplicates - why?
 	public void RegisterOrder (string traderName, string resource, int amount)
 	{
 		bool orderExistsAlready = false;
@@ -35,9 +37,9 @@ public class TradeService : MonoBehaviour {
 	
 	void SetOrderText (string resource, string transactionType)
 	{
-		string gameObjectName = string.Concat(Capitalize(resource), Capitalize(transactionType), "Orders");
+		string gameObjectName = string.Concat(Utilities.Capitalize(resource), Utilities.Capitalize(transactionType), "Orders");
 		Text text = GameObject.Find(gameObjectName).GetComponent<Text>();
-		text.text = string.Concat (Capitalize(resource)," Buy Orders: \n");
+		text.text = string.Concat (Utilities.Capitalize(resource)," Buy Orders: \n");
 
 		Dictionary<string, int> dict = GetOrderDictionary (resource, transactionType);
 		foreach (KeyValuePair<string, int> order in dict)
@@ -48,31 +50,8 @@ public class TradeService : MonoBehaviour {
 
 	Dictionary<string, int> GetOrderDictionary (string resource, string transactionType) 
 	{
-		string dictionaryName = string.Concat(Capitalize(resource), Capitalize(transactionType), "Orders");
+		string dictionaryName = string.Concat(Utilities.Capitalize(resource), Utilities.Capitalize(transactionType), "Orders");
 		Dictionary<string, int> dict = this.GetType().GetField(dictionaryName, BindingFlags.Instance|BindingFlags.NonPublic).GetValue(this) as Dictionary<string, int>;
 		return dict;
-	}
-
-	string Capitalize(string sourceStr)
-	{
-		sourceStr.Trim();
-		if (!string.IsNullOrEmpty(sourceStr))
-		{
-			char[] allCharacters = sourceStr.ToCharArray();
-			
-			for (int i = 0; i < allCharacters.Length; i++)
-			{
-				char character = allCharacters[i];
-				if (i == 0)
-				{
-					if (char.IsLower(character))
-					{
-						allCharacters[i] = char.ToUpper(character);
-					}
-				}
-			}
-			return new string(allCharacters);
-		}
-		return sourceStr;
 	}
 }

@@ -10,7 +10,6 @@ public class ChatService : MonoBehaviour {
 	List<string> textLines = new List<string>();
 	public int maxNumberOfLines;
 
-	// Use this for initialization
 	void Start () 
 	{
 		TextBox = TextObject.GetComponent<Text>();
@@ -31,7 +30,6 @@ public class ChatService : MonoBehaviour {
 		textLines.Add(messageToAppend);
 	}
 	
-	// Update is called once per frame
 	void Update () 
 	{
 		int listLength = textLines.Count;
