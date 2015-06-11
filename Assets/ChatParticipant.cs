@@ -75,7 +75,7 @@ public class ChatParticipant : MonoBehaviour {
 		}
 		else if (CalculateResourceNeed("wood") < 0)
 		{
-			WoodToSell = CalculateResourceNeed("wood") * -1;
+			WoodToSell = CalculateResourceNeed("wood");
 			TradeService.RegisterOrder(ParticipantName, "wood", WoodToSell);
 		}
 		else
@@ -90,7 +90,7 @@ public class ChatParticipant : MonoBehaviour {
 		}
 		else if (CalculateResourceNeed("clay") < 0)
 		{
-			ClayToSell = CalculateResourceNeed("clay") * -1;
+			ClayToSell = CalculateResourceNeed("clay");
 			TradeService.RegisterOrder(ParticipantName, "clay", ClayToSell);
 		}
 		else
