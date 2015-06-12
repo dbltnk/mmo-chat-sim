@@ -39,7 +39,7 @@ public class TradeService : MonoBehaviour {
 	{
 		string gameObjectName = string.Concat(Utilities.Capitalize(resource), Utilities.Capitalize(transactionType), "Orders");
 		Text text = GameObject.Find(gameObjectName).GetComponent<Text>();
-		text.text = string.Concat (Utilities.Capitalize(resource)," Buy Orders: \n");
+		text.text = string.Concat (Utilities.Capitalize(resource), " ", Utilities.Capitalize(transactionType)," Orders: \n");
 
 		Dictionary<string, int> dict = GetOrderDictionary (resource, transactionType);
 		foreach (KeyValuePair<string, int> order in dict)
