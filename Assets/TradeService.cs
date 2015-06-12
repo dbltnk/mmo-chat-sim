@@ -12,7 +12,6 @@ public class TradeService : MonoBehaviour {
 	Dictionary<string, int> ClayBuyOrders = new Dictionary<string, int>();
 	Dictionary<string, int> ClaySellOrders = new Dictionary<string, int>();
 
-	//TODO: this sometimes throws duplicates - why?
 	public void RegisterOrder (string traderName, string resource, int amount)
 	{
 		bool orderExistsAlready = false;

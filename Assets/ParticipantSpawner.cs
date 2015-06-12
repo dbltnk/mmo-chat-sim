@@ -11,7 +11,7 @@ public class ParticipantSpawner : MonoBehaviour {
 	public float minTimeOutInSeconds;
 	public float maxTimeOutInSeconds;
 
-	string[] names = 
+	List<string> namesAvailable = new List<string>()
 	{
 		"Shu Wa-Shi", 
 		"Chui To-Ki", 
@@ -34,6 +34,9 @@ public class ParticipantSpawner : MonoBehaviour {
 		"Lo Da-Shu", 
 		"Sui Chio-Tsao"
 	};
+
+	List<string> namesUsed = new List<string>();
+
 
 	// Use this for initialization
 	void Start () 
@@ -64,9 +67,12 @@ public class ParticipantSpawner : MonoBehaviour {
 
 	string selectRandomName()
 	{
-		int maxNumber = names.GetLength(0);
+		int maxNumber = namesAvailable.Count;
 		int randomNumber = Random.Range(1, maxNumber);
-		return names[randomNumber];
+		string nameSelected = namesAvailable[randomNumber];
+		namesUsed.Add(namesAvailable[randomNumber]);
+		namesAvailable.RemoveAt(randomNumber);
+		return nameSelected;
 	}
 }
 
